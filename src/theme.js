@@ -1,5 +1,6 @@
 import { createTheme } from '@mui/material/styles';
 import { red } from '@mui/material/colors';
+import "@fontsource/nunito-sans";
 
 // Create a theme instance.
 const theme = createTheme({
@@ -14,6 +15,9 @@ const theme = createTheme({
       main: red.A400,
     },
   },
+  typography: {
+    fontFamily: 'Nunito Sans'
+  }
 });
 
 export default theme;
