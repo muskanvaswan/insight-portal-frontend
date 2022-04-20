@@ -1,10 +1,17 @@
 import Head from 'next/head'
 import { useEffect, useState } from 'react'
-import { Box, Typography, Paper, TextField, Button, IconButton, LinearProgress } from '@mui/material'
+import { Box, Typography, Paper, TextField, Button, IconButton } from '@mui/material'
+import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
 import DoneIcon from '@mui/icons-material/Done';
+import abi from '../src/utils/InsightPortal.json'
+import { ethers } from "ethers";
 
 export default function Home() {
   const [ currentAccount, setCurrentAccount ] = useState("")
+  const [ insight, setInsight ] = useState("");
+  const [ loading, setLoading ] = useState(false);
+  const contractAddress = '0xAD6BE15Ddb311D8f312FD10a3c91d689648c8Ad2';
+  const contractABI = abi.abi;
 
   const checkIfWalletIsConnected = async () => {
     try {
@@ -43,13 +50,63 @@ export default function Home() {
 
       console.log("Connected", accounts[0]);
       setCurrentAccount(accounts[0]);
+      // getInsights();
     } catch (error) {
       console.log(error)
     }
   }
 
+  const getInsights = async () => {
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const insightPortalContract = new ethers.Contract(contractAddress, contractABI, signer);
+
+        let insights = await insightPortalContract.getInsights();
+        console.log("Inishts: ", insights);
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const submitInsight = async ( _insight ) => {
+    setLoading(true);
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const insightPortalContract = new ethers.Contract(contractAddress, contractABI, signer);
+
+        const insightTxn = await insightPortalContract.giveInsight(_insight);
+        console.log("Mining...", insightTxn.hash);
+
+        await insightTxn.wait();
+        console.log("Mined -- ", insightTxn.hash);
+
+        let insights = await insightPortalContract.getInsights();
+        console.log("Insights now are:", insights);
+
+        setInsight("");
+        setLoading(false)
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     checkIfWalletIsConnected();
+    // getInsights();
   }, [])
 
   return (
@@ -65,15 +122,19 @@ export default function Home() {
           <Typography variant="body1" color="danger">I&apos;m interested in knowing what you have to say. You can leave here any opinions you have of me, anything you need me to know or even just your musings of life in general, using your blockchain wallet!</Typography>
           {currentAccount !== "" ?
           <Box sx={{display: 'flex', mt: 3, width: 300}}>
-            <Paper sx={{mx: 1, width: '100%', px: 1, pt: 1, borderRadius: '10px', bgcolor: 'rgba(255, 255, 255, 0)', position: 'relative'}} elevation={6}>
-              <Box sx={{width: '100%', display: 'flex', justifyContent: 'space-between', mb: 1}}>
+            <Paper sx={{mx: 1, width: '100%', px: loading? 0: 1, pt: loading? 0: 1, borderRadius: '10px', bgcolor: 'rgba(255, 255, 255, 0)', position: 'relative'}} elevation={6}>
+              {loading && <LinearProgress sx={{height: '100%', borderRadius: '10px', opacity: 0.3, background:'rgba(0, 0, 0, 0)', [`& .${linearProgressClasses.bar}`]: {borderRadius: '10px', background: 'mint'},}}/>}
+              {loading && <Box sx={{height: '100%', width: '100%', position: 'absolute', top: 0, display: 'flex', justifyContent: 'center', alignItems: 'center'}}><b>Completing Transaction ...</b></Box>}
+              <Box sx={{width: '100%', display: 'flex', justifyContent: 'space-between', mb: 1, opacity: loading? 0: 1, }}>
                 <TextField
                   variant="standard"
                   sx={{width: '85%', p:0, bgcolor: 'rgba(0, 0, 0, 0)', borderRadius: '10px', '& input': {fontSize: 15}}}
+                  value={insight}
+                  onChange={(e) => setInsight(e.target.value)}
                 />
-                <IconButton size="small" sx={{bgcolor: 'black', color: 'white', borderRadius: 2}}><DoneIcon size="small"/></IconButton>
+                <IconButton size="small" sx={{bgcolor: 'black', color: 'white', borderRadius: 2}} onClick={submitInsight}><DoneIcon size="small"/></IconButton>
               </Box>
-              {false && <LinearProgress/>}
+
             </Paper>
           </Box>
         :

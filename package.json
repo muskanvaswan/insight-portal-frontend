@@ -16,6 +16,7 @@
     "@fontsource/nunito-sans": "^4.5.6",
     "@mui/icons-material": "^5.6.2",
     "@mui/material": "^5.6.1",
+    "ethers": "^5.6.4",
     "next": "12.1.5",
     "react": "18.0.0",
     "react-dom": "18.0.0"
