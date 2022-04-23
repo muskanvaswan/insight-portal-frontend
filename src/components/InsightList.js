@@ -10,14 +10,12 @@ const HashButton = ({ address }) => {
     <Button
       sx={{textTransform: 'none', py: 0, px: 1, borderRadius: 5, bgcolor: 'white', color: 'black', '&:hover': {bgcolor: 'grey', color: 'white'}}}
       onClick={() => {navigator.clipboard.writeText(address);}}
-
     >
       {humanize(address)}
     </Button>
   )
 }
 const InsightCard = ({ insight, key }) => {
-
   return (
     <Box key={key} sx={{borderRadius: 5, bgcolor: 'rgba(255, 255, 255, 0.14)', p: 2, my: 2, width: '100%', wordWrap: 'break-word'}}>
       <HashButton address={insight.sender} />
