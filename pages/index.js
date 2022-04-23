@@ -15,7 +15,7 @@ export default function Home() {
   const [ metamask, setMetamask ] = useState(false)
   const [ currentAccount, setCurrentAccount ] = useState("")
 
-  const contractAddress = '0x5164919aF63e60BB0971A53dacdED500b0D58C8F';
+  const contractAddress = '0xB6cCdA6DC281Ee1Ce197ef73111CC5C4d8A36f27';
   const contractABI = abi.abi;
 
 
