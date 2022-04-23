@@ -7,6 +7,7 @@ import abi from '../src/utils/InsightPortal.json'
 import { ethers } from "ethers";
 
 import NoMetamask from '../src/components/NoMetamask'
+import ConnectWalletButton from '../src/components/ConnectWalletButton'
 
 export default function Home() {
   const [ metamask, setMetamask ] = useState(false)
@@ -37,25 +38,6 @@ export default function Home() {
       }
     } catch (error) {
       console.log(error);
-    }
-  }
-
-  const connectWallet = async () => {
-    try {
-      const { ethereum } = window;
-
-      if (!ethereum) {
-        setMetamask(false);
-        return;
-      }
-
-      const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-
-      console.log("Connected", accounts[0]);
-      setCurrentAccount(accounts[0]);
-      // getInsights();
-    } catch (error) {
-      console.log(error)
     }
   }
 
@@ -126,32 +108,27 @@ export default function Home() {
           <Typography variant="h2" color="danger">Hi, I&apos;m <strong>Muskan Vaswan</strong></Typography>
           <Typography variant="body1" color="danger">I&apos;m interested in knowing what you have to say. You can leave here any opinions you have of me, anything you need me to know or even just your musings of life in general, using your blockchain wallet!</Typography>
           {currentAccount !== "" ?
-          <Box sx={{display: 'flex', mt: 3, width: 300}}>
-            <Paper sx={{mx: 1, width: '100%', px: loading? 0: 1, pt: loading? 0: 1, borderRadius: '10px', bgcolor: 'rgba(255, 255, 255, 0)', position: 'relative'}} elevation={6}>
-              {loading && <LinearProgress sx={{height: '100%', borderRadius: '10px', opacity: 0.3, background:'rgba(0, 0, 0, 0)', [`& .${linearProgressClasses.bar}`]: {borderRadius: '10px', background: 'mint'},}}/>}
-              {loading && <Box sx={{height: '100%', width: '100%', position: 'absolute', top: 0, display: 'flex', justifyContent: 'center', alignItems: 'center'}}><b>Completing Transaction ...</b></Box>}
-              <Box sx={{width: '100%', display: 'flex', justifyContent: 'space-between', mb: 1, opacity: loading? 0: 1, }}>
-                <TextField
-                  variant="standard"
-                  sx={{width: '85%', p:0, bgcolor: 'rgba(0, 0, 0, 0)', borderRadius: '10px', '& input': {fontSize: 15}}}
-                  value={insight}
-                  onChange={(e) => setInsight(e.target.value)}
-                />
-                <IconButton size="small" sx={{bgcolor: 'black', color: 'white', borderRadius: 2}} onClick={submitInsight}><DoneIcon size="small"/></IconButton>
-              </Box>
+            <Box sx={{display: 'flex', mt: 3, width: 300}}>
+              <Paper sx={{mx: 1, width: '100%', px: loading? 0: 1, pt: loading? 0: 1, borderRadius: '10px', bgcolor: 'rgba(255, 255, 255, 0)', position: 'relative'}} elevation={6}>
+                {loading && <LinearProgress sx={{height: '100%', borderRadius: '10px', opacity: 0.3, background:'rgba(0, 0, 0, 0)', [`& .${linearProgressClasses.bar}`]: {borderRadius: '10px', background: 'mint'},}}/>}
+                {loading && <Box sx={{height: '100%', width: '100%', position: 'absolute', top: 0, display: 'flex', justifyContent: 'center', alignItems: 'center'}}><b>Completing Transaction ...</b></Box>}
+                <Box sx={{width: '100%', display: 'flex', justifyContent: 'space-between', mb: 1, opacity: loading? 0: 1, }}>
+                  <TextField
+                    variant="standard"
+                    sx={{width: '85%', p:0, bgcolor: 'rgba(0, 0, 0, 0)', borderRadius: '10px', '& input': {fontSize: 15}}}
+                    value={insight}
+                    onChange={(e) => setInsight(e.target.value)}
+                  />
+                  <IconButton size="small" sx={{bgcolor: 'black', color: 'white', borderRadius: 2}} onClick={submitInsight}><DoneIcon size="small"/></IconButton>
+                </Box>
 
-            </Paper>
-          </Box>
-        :
-        <Box sx={{mt: 3}}>
-          <Button
-            variant="contained"
-            size="large"
-            sx={{bgcolor: "black", color: "white", mt: 3, borderRadius: 5}}
-            onClick={connectWallet}>
-            Connect Wallet
-          </Button>
-        </Box>}
+              </Paper>
+            </Box>
+          :
+            <Box sx={{mt: 3}}>
+              <ConnectWalletButton setAccount={setCurrentAccount} onConnect={() => {}} />
+            </Box>
+          }
         </Paper>
         {!metamask && <NoMetamask />}
       </Box>
