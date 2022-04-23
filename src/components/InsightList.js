@@ -17,14 +17,6 @@ const HashButton = ({ address }) => {
 }
 const InsightCard = ({ insight, key }) => {
 
-  const [ fontSize, setFontSize ] = useState(20);
-  useEffect(() => {
-    if (insight.insight.length < 10 || insight.insight.length > 50)
-      setFontSize(70 / Math.ceil(insight.insight.length / 50))
-    else
-      setFontSize(100 / Math.log(insight.insight.length)/ Math.log(2));
-  })
-
   return (
     <Box key={key} sx={{borderRadius: 5, bgcolor: 'rgba(61, 61, 61, 0.14)', p: 2, my: 2, width: '100%', wordWrap: 'break-word'}}>
       <HashButton address={insight.sender} />
@@ -59,6 +51,11 @@ export default function InsightList({contractABI, contractAddress}) {
     }
   }
 
+  useEffect(() => {
+    const id = setInterval(getInsights, 3000)
+    return () => clearInterval(id);
+  }, [])
+  
   useEffect(() => {getInsights()}, []);
 
   return (
