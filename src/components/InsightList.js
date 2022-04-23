@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Box, Paper, Typography, Button, Collapse, IconButton, Slide } from '@mui/material'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 import { ethers } from 'ethers';
 
@@ -65,7 +66,7 @@ export default function InsightList({contractABI, contractAddress}) {
             <IconButton
               color="inherit"
               onClick={() => {setVeiwInsights(x => !x)}}>
-              <KeyboardArrowDownIcon />
+              {viewInsights? <KeyboardArrowDownIcon />: <KeyboardArrowUpIcon />}
             </IconButton>
           </Box>
 

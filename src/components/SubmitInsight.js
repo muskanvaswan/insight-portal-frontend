@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Paper, Box, IconButton, TextField } from '@mui/material'
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
 import DoneIcon from '@mui/icons-material/Done';
@@ -8,9 +8,15 @@ import { ethers } from "ethers";
 export default function SubmitInsight({ contractAddress, contractABI }) {
   const [ loading, setLoading ] = useState(false);
   const [ insight, setInsight ] = useState("");
+  const [ error, setError ] = useState(false);
 
   const submitInsight = async () => {
     const _insight = insight;
+    if (_insight == "" || _insight.length < 30) {
+      setError(true);
+      return ;
+    }
+
     setLoading(true);
     try {
       const { ethereum } = window;
@@ -49,6 +55,7 @@ export default function SubmitInsight({ contractAddress, contractABI }) {
           sx={{width: '85%', p:0, bgcolor: 'rgba(0, 0, 0, 0)', borderRadius: '10px', '& input': {fontSize: 15}}}
           value={insight}
           onChange={(e) => setInsight(e.target.value)}
+          error={error}
         />
         <IconButton size="small" sx={{bgcolor: 'black', color: 'white', borderRadius: 2}} onClick={submitInsight}><DoneIcon size="small"/></IconButton>
       </Box>
